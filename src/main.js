@@ -12,7 +12,7 @@ var firebaseConfig = {
   projectId: "drcloud-1547993518594",
   storageBucket: "drcloud-1547993518594.appspot.com",
   messagingSenderId: "570792336521",
-  appId: "1:570792336521:web:fe60726e85f5bd5a"
+  appId: "1:570792336521:web:62ab59097ca8e3e7d8fa58"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -20,12 +20,7 @@ firebase.initializeApp(firebaseConfig);
 // initialize cloud firestore through firebase
 var db = firebase.firestore();
 
-window.db = db
-
-//Disable deprecated features
-db.settings({
-  timestampsInSnapshots: true
-});
+window.db = db;
 
 Vue.config.productionTip = false
 

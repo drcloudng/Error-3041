@@ -32,6 +32,7 @@
 <script>
 import Authentications from "../Authentications";
 import axios from "axios";
+import firebase from 'firebase'
 export default {
   data() {
     return {
@@ -42,19 +43,25 @@ export default {
   },
   methods: {
     signin() {
-      axios
-        .post("http://localhost:3000/signin", {
-          email: this.email,
-          password: this.password
-        })
-        .then(response => {
-          if (response.data.user) {
-            this.$root.auth = response.data.user;
-            this.$router.push("account");
-          } else if (response.data.code) {
-            this.error = response.data.message;
-          }
-        });
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then((res) => {
+        localStorage.setItem("currentUserId",res.user.uid )
+        this.$router.push('/messanger')
+      }).catch(function(error) {
+        alert("Invalid credentials")
+      });
+      // axios
+      //   .post("http://localhost:3000/signin", {
+      //     email: this.email,
+      //     password: this.password
+      //   })
+      //   .then(response => {
+      //     if (response.data.user) {
+      //       this.$root.auth = response.data.user;
+      //       this.$router.push("account");
+      //     } else if (response.data.code) {
+      //       this.error = response.data.message;
+      //     }
+      //   });
     }
   }
 };

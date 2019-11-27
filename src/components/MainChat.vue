@@ -2,9 +2,10 @@
   <div class="main-chat-full">
     <div @click="$emit('setSideInfo', 1)" class="chat-nav">
       <div class="chat-img">
-        <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="chat-img">
+        <img v-if="userToDisplay.profileImage != ''" :src="userToDisplay.profileImage" alt="msg-img" class="chat-img">
+         <img v-else src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="chat-img">
       </div> 
-      <h6>Ibrahim Utman</h6>
+      <h6>{{`${userToDisplay.FirstName} ${userToDisplay.LastName}`}}</h6>
       <ul>
         <li>a</li>
         <li><img src="../assets/match.png" width="15px" alt=""></li>
@@ -13,104 +14,80 @@
     </div>
     <div class="main-chat-content">
       <div class="mesgs">
-        <div class="incoming-msg">
-          <div class="recieved-msg">
-            <p class="recieved-msg-text msg-text mb-0">
-              hello<span class="text-time">2:06 PM</span>
-            </p>
-          </div>
-        </div>
-        <div class="incoming-msg">
-          <div class="recieved-msg">
-            <p class="recieved-msg-text msg-text mb-0">
-              hello<span class="text-time">2:06 PM</span>
-            </p>
-          </div>
-        </div>
-        <div class="incoming-msg">
-          <div class="recieved-msg">
-            <p class="recieved-msg-text msg-text mb-0">
-              hello how far na <span class="text-time">2:06 PM</span>
-            </p>
-          </div>
-        </div>
-        <div class="incoming-msg">
-          <div class="recieved-msg">
-            <p class="recieved-msg-text msg-text mb-0">
-              How things be for your side this days <span class="text-time">2:06 PM</span>
-              </p>
-          </div>
-        </div>
-        <div class="outgoing-msg">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy <span class="text-time mb-0">2:06 PM</span>
+        <div v-for="message in messageList" :key="message.messageID">
+          <div v-if="message.recipientID == currentId" class="incoming-msg">
+            <div class="recieved-msg">
+              <p class="recieved-msg-text msg-text mb-0">
+                {{message.messageText}}<span class="text-time">{{message.messageTime}}</span>
               </p>
             </div>
-        </div>
-        <div class="outgoing-msg">
+          </div>
+          <div v-else class="outgoing-msg">
             <div class="sent-msg">
               <p class="sent-msg-text msg-text mb-0">
-                This is crazy <span class="text-time mb-0">2:06 PM</span>
+                {{message.messageText}} <span class="text-time mb-0">{{message.messageTime}}</span>
               </p>
             </div>
-        </div>
-        <div class="outgoing-msg">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy <span class="text-time mb-0">2:06 PM</span>
-              </p>
-            </div>
-        </div>
-        <div class="outgoing-msg">
-          <div class="sent-msg-box">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy the kinda thing ive always been wantingThis is crazy the kinda
-                <span class="text-time">2:06 PM</span>
-              </p> 
-            </div>
           </div>
         </div>
-        <div class="outgoing-msg">
-          <div class="sent-msg-box">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy the kinda thing ive always been wantingThis is crazy the kinda
-                <span class="text-time">2:06 PM</span>
-              </p> 
-            </div>
-          </div>
-        </div>
-        <div class="outgoing-msg">
-          <div class="sent-msg-box">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy the kinda thing ive always been wantingThis is crazy the kinda
-                <span class="text-time">2:06 PM</span>
-              </p> 
-            </div>
-          </div>
-        </div>
-        <div class="outgoing-msg">
-          <div class="sent-msg-box">
-            <div class="sent-msg">
-              <p class="sent-msg-text msg-text mb-0">
-                This is crazy the kinda thing ive always been wantingThis is crazy the kinda
-                <span class="text-time">2:06 PM</span>
-              </p> 
-            </div>
-          </div>
-        </div>
-        
       </div>
       <div class="type-msg-box">
-          <input type="text" class="write-msg form-control" placeholder="Type a message">
+          <input v-model="messageBody" @keyup.enter="sendChat" type="text" class="write-msg form-control" placeholder="Type a message">
       </div>
     </div>
   </div>
 </template>
-
+<script>
+export default { 
+    props: [
+      'messages',
+      'currentUserOnChat',
+      'currentId'
+    ],
+    data() {
+        return {
+            userToDisplay: this.currentUserOnChat,
+            messageList: this.messages,
+            messageBody:""
+        }
+    }, 
+    watch: {
+      messages: function(newMessages) {
+        this.messageList = newMessages
+      },
+      currentUserOnChat: function(newUser) {
+        this.userToDisplay = newUser
+      }
+    },
+    methods: {
+      sendThreadid (chatThreadId, FirstName, LastName) {
+        this.$emit('clicked', {chatThreadId, FirstName, LastName})
+      },
+      sendChat () {
+        let messageContent = {
+          "messageDate":"Saturday 28:09:2019",
+          "messageID":new Date().getTime(),
+          "messageSender":this.currentId,
+          "messageText":this.messageBody,
+          "messageTime":"06:08",
+          "recieverType":"Patient",
+          "recipientID":this.userToDisplay.userId,
+          "senderName": "Test User",
+          "type":"TEXT"
+        }
+        console.log(messageContent)
+        db.collection(`ChatMessage/${this.userToDisplay.chatThreadId}/Message`).add(messageContent)
+        .then(refDoc => {
+          console.log(refDoc)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+        this.messageBody = "";
+      }
+    }
+}
+</script>
 <style scoped>
 .main-chat-full {
   height: 91.5vh;
@@ -152,7 +129,7 @@
 .mesgs {
   padding: 10px 10%;
   overflow: auto;
-  height: 505px;
+  height: 700px;
 }
 .incoming-msg,
 .outgoing-msg {

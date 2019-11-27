@@ -8,125 +8,15 @@
       aria-describedby="basic-addon1">
   </div>
   <div class="sidebar-content">
-          <div class="msg-info">
+    <h3 v-if="userList.length == 0">No paired patient to this carespecialist</h3>
+          <div v-for="user in userList" :key="user.Phone" @click="sendThreadid(user.chatThreadId, user.FirstName, user.LastName, user.profileImage, user.userId)" class="msg-info">
             <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
+              <img :src="user.profileImage" alt="msg-img" class="msg-img">
             </div>
 
             <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div @click="$emit('setSideInfo', 1)" class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
-              <p class="msg-time">now</p>
-            </div>
-            <div class="msg-unread">
-              <p>2</p>
-            </div>
-          </div>
-          <div class="msg-info">
-            <div class="msg-img">
-              <img src="../assets/adolescence-attractive-beautiful-573299.jpg" alt="msg-img" class="msg-img">
-            </div>
-            <div class="msg-content-info">
-              <h6 class="msg-name">Ibrahim Uthman</h6>
-              <p class="msg-msg">Let me know when you're availa...</p>
+              <h6 class="msg-name">{{`${user.FirstName} ${user.LastName}`}}</h6>
+              <p class="msg-msg">{{user.Speciality}}</p>
               <p class="msg-time">now</p>
             </div>
             <div class="msg-unread">
@@ -134,10 +24,37 @@
             </div>
           </div>
         </div>
-</div>
-  
+</div> 
 </template>
-
+<script>
+export default { 
+    props: [
+      'users'
+    ],
+    // computed: {
+    //   userList : function() {
+    //     return users
+    //   }
+    // },
+    data() {
+        return {
+            active: true,
+            descActive: false,
+            userList: this.users
+        }
+    }, 
+    watch: {
+      users: function(newUsers) {
+        this.userList = newUsers
+      }
+    },
+    methods: {
+      sendThreadid (chatThreadId, FirstName, LastName, profileImage, userId) {
+        this.$emit('clicked', {chatThreadId, FirstName, LastName, profileImage, userId})
+      }
+    }
+}
+</script>
 <style scoped>
 .sidebar-content {
   height: 83.8vh;
