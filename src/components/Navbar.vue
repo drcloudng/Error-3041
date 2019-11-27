@@ -31,16 +31,26 @@
               <i class="fa fa-bell"></i>
             </a>
           </li>
-          <li @click="signOut()" class="nav-item active dropdown">
-            <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <li @click="signOut()" class="nav-item active ">
+            <!-- <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
                   <!-- <img id="user-img" src="imgs/adolescence-attractive-beautiful-573299.jpg" class="img-caller" alt="caller"> -->
+              <span class="user-name">Logout</span>
+            <!-- </span> -->
+
+            <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a href="" class="dropdown-item">logout</a>
+            </div> -->
+          </li>
+          <!-- <li @click="signOut()" class="nav-item active dropdown">
+            <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <img id="user-img" src="imgs/adolescence-attractive-beautiful-573299.jpg" class="img-caller" alt="caller">
               <span class="user-name"> Ibinronke Umahi</span>
             </span>
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a href="" class="dropdown-item">logout</a>
             </div>
-          </li>
+          </li> -->
 
         </ul>
       </div>
@@ -50,6 +60,7 @@
 
 <script>
 import axios from "axios";
+import firebase from 'firebase'
 export default {
   beforeRouteEnter() {
     if (!this.$root.auth) {
@@ -58,15 +69,11 @@ export default {
   },
   methods: {
     signOut() {
-      axios
-        .get("http://localhost:3000/signout")
-        .then(response => {
-          this.$root.auth = response.data;
-          this.$router.push("/");
-        })
-        .catch(err => {
-          this.error = err;
-        });
+       firebase.auth().signOut().then(function() {
+         this.$router.push('/')
+      }).catch(function(error) {
+         
+      });
     }
   }
 };
@@ -81,7 +88,9 @@ export default {
     2px 0px 10px rgba(71, 71, 71, 0.1);
   z-index: 1;
 }
-
+.nav-item{
+  cursor: pointer;
+}
 .nav-mgn {
   margin-left: 15%;
 }

@@ -111,9 +111,6 @@ export default {
     }
   },
   mounted() {
-    // firebase.auth().signOut().then(function() {
-    // }).catch(function(error) {
-    // });
     let self = this;
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
